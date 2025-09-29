@@ -1,19 +1,12 @@
-FROM golang:1.22-alpine AS builder
+FROM node:18-alpine
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
-RUN go mod download
+COPY package*.json ./
+RUN npm install --production
 
-COPY *.go ./
+COPY . .
 
-ENV CGO_ENABLED=0
-RUN go build -ldflags="-w -s" -o tracker .
+EXPOSE 3000
 
-FROM alpine:latest
-
-WORKDIR /root/
-
-COPY --from=builder /app/tracker .
-
-CMD ["./tracker"]
+CMD ["npm", "start"]
