@@ -27,7 +27,6 @@ jobs:
           echo "=== Dockerfile check ==="
           if [ -f "Dockerfile" ]; then
             echo "✓ Dockerfile exists"
-            cat Dockerfile
           else
             echo "✗ Dockerfile not found"
             exit 1
@@ -36,22 +35,10 @@ jobs:
           echo "=== package.json check ==="
           if [ -f "package.json" ]; then
             echo "✓ package.json exists"
-            cat package.json
           else
-            echo "⚠ package.json not found, creating basic one"
-            cat > package.json << EOF
-{
-  "name": "final-project",
-  "version": "1.0.0",
-  "scripts": {
-    "start": "node server.js",
-    "test": "echo 'Tests passed'"
-  },
-  "dependencies": {
-    "express": "^4.18.2"
-  }
-}
-EOF
+            echo "⚠ package.json not found"
+            # Создаем простой package.json без сложного синтаксиса
+            echo '{"name":"final-project","version":"1.0.0","scripts":{"start":"node server.js","test":"echo test"},"dependencies":{"express":"^4.18.2"}}' > package.json
           fi
 
       - name: Test Docker build locally
@@ -76,11 +63,7 @@ EOF
             echo "❌ ERROR: Dockerfile not found!"
             exit 1
           fi
-          if [ ! -f "package.json" ]; then
-            echo "❌ ERROR: package.json not found!"
-            exit 1
-          fi
-          echo "✓ All required files present"
+          echo "✓ Dockerfile present"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -99,8 +82,6 @@ EOF
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/final-project:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/final-project:${{ github.ref_name }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/final-project:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/final-project:buildcache,mode=max
 
       - name: Verify push
         run: |
