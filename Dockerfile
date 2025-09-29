@@ -2,11 +2,16 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install --production
+# Копируем package.json отдельно для кеширования
+COPY package.json ./
 
+# Устанавливаем зависимости с флагами для стабильности
+RUN npm install --production --silent --no-optional
+
+# Копируем остальные файлы
 COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Запускаем приложение
+CMD ["node", "server.js"]
