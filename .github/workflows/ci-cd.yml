@@ -2,10 +2,10 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, local-iteration]
     tags: ['v*']
   pull_request:
-    branches: [main, master]
+    branches: [main, master, local-iteration]
 
 env:
   REGISTRY: docker.io
