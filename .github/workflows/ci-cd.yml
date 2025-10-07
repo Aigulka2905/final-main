@@ -23,7 +23,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21' # Укажи версию Go, соответствующую твоему проекту
+          go-version: '1.23'
 
       - name: Validate project structure
         run: |
