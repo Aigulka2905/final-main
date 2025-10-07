@@ -1,12 +1,8 @@
-FROM node:18-alpine
-
+FROM golang:1.23-alpine
 WORKDIR /app
-
-COPY package.json ./
-RUN npm install --production --silent
-
+COPY go.mod go.sum ./
+RUN go mod download
 COPY . .
-
-EXPOSE 3000
-
-CMD ["node", "server.js"]
+RUN go build -o main .
+EXPOSE 8080
+CMD ["./main"]
